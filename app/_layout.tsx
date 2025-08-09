@@ -1,7 +1,9 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
 import 'react-native-reanimated';
 import "../global.css";
 
@@ -13,6 +15,8 @@ function useColorScheme() {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [queryClient] = useState(() => new QueryClient());
+
   const [loaded] = useFonts({
     ManropeBold: require('../assets/fonts/Manrope-Bold.ttf'),
     ManropeExtraBold: require('../assets/fonts/Manrope-ExtraBold.ttf'),
@@ -30,7 +34,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot />
+      <QueryClientProvider client={queryClient}>
+        <Slot />
+      </QueryClientProvider>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
   );
