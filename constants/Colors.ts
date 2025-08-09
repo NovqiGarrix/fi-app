@@ -21,5 +21,6 @@ export const Colors = {
     icon: '#FCFCFC',
     tabIconDefault: '#B1B1B1',
     tabIconSelected: '#FCFCFC',
+    tintSecondary: '#97E0F7',
   },
 };
