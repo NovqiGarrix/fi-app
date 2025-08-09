@@ -1,4 +1,5 @@
 import { ExpenseLabelCards } from '@/components/ExpenseLabelCards';
+import { Incomes } from '@/components/Incomes';
 import { MonthlyExpensesChart } from '@/components/MonthlyExpensesChart';
 import { Fonts } from '@/constants/Fonts';
 import { Image, SafeAreaView, Text, View } from 'react-native';
@@ -46,6 +47,10 @@ export default function HomeScreen() {
                 </View>
 
                 <ExpenseLabelCards />
+            </View>
+
+            <View className='px-4 pt-6'>
+                <Incomes />
             </View>
 
         </SafeAreaView >
