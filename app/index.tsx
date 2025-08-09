@@ -1,13 +1,14 @@
 import { ExpenseLabelCards } from '@/components/ExpenseLabelCards';
 import { Incomes } from '@/components/Incomes';
 import { MonthlyExpensesChart } from '@/components/MonthlyExpensesChart';
+import { Spendings } from '@/components/Spendings';
 import { Fonts } from '@/constants/Fonts';
-import { Image, SafeAreaView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 
 export default function HomeScreen() {
 
     return (
-        <SafeAreaView className='flex-1 bg-dark-background'>
+        <ScrollView contentContainerClassName='pb-8' className='flex-1 bg-dark-background'>
 
             <View className='py-14 px-4 bg-[#1F1F1F] rounded-b-[2.5rem]'>
                 <View className='flex-row justify-between items-center'>
@@ -51,8 +52,10 @@ export default function HomeScreen() {
 
             <View className='px-4 pt-6'>
                 <Incomes />
+
+                <Spendings />
             </View>
 
-        </SafeAreaView >
+        </ScrollView>
     );
 }
