@@ -3,22 +3,9 @@ import { Incomes } from '@/components/Incomes';
 import { MonthlyExpensesChart } from '@/components/MonthlyExpensesChart';
 import { Spendings } from '@/components/Spendings';
 import { Fonts } from '@/constants/Fonts';
-import { database } from '@/lib/db';
-import { useQuery } from '@tanstack/react-query';
 import { Image, ScrollView, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-
-    const { data } = useQuery({
-        queryKey: ['expenses'],
-        queryFn: async () => {
-            const expensesCollection = database.get('expenses')
-            const expenses = await expensesCollection.query()
-            return expenses
-        },
-    });
-
-    console.log('Expenses:', data);
 
     return (
         <ScrollView contentContainerClassName='pb-8' className='flex-1 bg-dark-background'>
