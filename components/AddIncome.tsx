@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { incomeCollection } from "@/lib/db";
+import { addIncomeSchema, type AddIncomeSchema } from "@/zod/income.zod";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDatabase } from "@nozbe/watermelondb/react";
@@ -9,14 +10,6 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Notifier, NotifierComponents } from "react-native-notifier";
-import { z } from 'zod';
-
-const addIncomeSchema = z.object({
-    title: z.string().min(1, "Title is required"),
-    amount: z.number().min(1, "Amount must be a positive number"),
-});
-
-type AddIncomeSchema = z.infer<typeof addIncomeSchema>;
 
 export function AddIncome() {
 

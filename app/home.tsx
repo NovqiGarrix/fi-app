@@ -3,7 +3,10 @@ import { Incomes } from '@/components/Incomes';
 import { Spendings } from '@/components/Spendings';
 import { TotalSpendings } from '@/components/TotalSpendings';
 import { Fonts } from '@/constants/Fonts';
-import { Image, ScrollView, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { BackHandler, Image, ScrollView, Text, View } from 'react-native';
 
 function getCurrentMonthYear() {
     const d = new Date();
@@ -15,6 +18,25 @@ function getCurrentMonthYear() {
 }
 
 export default function HomeScreen() {
+
+    const { data: onboardingComplete } = useQuery({
+        queryKey: ['onboardingComplete'],
+        queryFn: () => AsyncStorage.getItem('onboardingComplete'),
+    });
+
+    useEffect(() => {
+
+        // Android back should exit app if onboarding is completed
+        const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+            BackHandler.exitApp()
+            return true
+        })
+
+        return () => {
+            sub.remove()
+        }
+
+    }, [onboardingComplete]);
 
     return (
         <ScrollView contentContainerClassName='pb-8' className='flex-1 bg-dark-background'>
