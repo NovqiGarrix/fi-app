@@ -39,7 +39,7 @@ export function AddExpense() {
     });
 
     useEffect(() => {
-        if (categories) {
+        if (categories?.length) {
             form.setValue('categoryId', categories[0].id);
         }
     }, [categories, form]);
