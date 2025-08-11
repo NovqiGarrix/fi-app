@@ -22,7 +22,7 @@ export const ExpenseLabelCards = withObservables([], () => ({
 function ExpenseLabelCardsComp({ categories, expenses }: ExpenseLabelCardsProps) {
 
     return (
-        <View className="flex-row mr-3 mt-12">
+        <View className="flex-row mr-3">
             <CreateExpenseLabel />
 
             <FlatList
@@ -47,7 +47,7 @@ function ExpenseLabelCard({ item, expenses }: { item: Category; expenses: Expens
             <Text style={{ fontFamily: Fonts.ManropeRegular, color: textOn(item.color) }} className="text-base">
                 {item.name}
             </Text>
-            <Text style={{ fontFamily: Fonts.ManropeBold, color: textOn(item.color) }} className="text-xl">
+            <Text style={{ fontFamily: Fonts.ManropeBold, color: textOn(item.color) }} className="text-lg">
                 {formatMoney(amount)}
             </Text>
         </TouchableOpacity>
