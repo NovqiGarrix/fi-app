@@ -1,6 +1,9 @@
 package com.novqigarrix.fiapp
 
+
 import android.app.Application
+import com.nozbe.watermelondb.jsi.WatermelonDBJSIPackage;        
+
 import android.content.res.Configuration
 
 import com.facebook.react.PackageList
@@ -25,7 +28,9 @@ class MainApplication : Application(), ReactApplication {
             val packages = PackageList(this).packages
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(MyReactNativePackage())
-            return packages
+            
+            packages.add(WatermelonDBJSIPackage())
+        return packages
           }
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"

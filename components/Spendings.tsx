@@ -1,52 +1,13 @@
 import { Fonts } from "@/constants/Fonts";
+import { expenseCollection } from "@/lib/db";
+import Expense from "@/model/Expense.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
+import { formatMoney } from "@/utils/formatter";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Q } from "@nozbe/watermelondb";
+import { withObservables } from "@nozbe/watermelondb/react";
 import { FlatList, Text, View } from "react-native";
-
-
-const DATA = [
-    {
-        id: '1',
-        title: 'Rent',
-        amount: 1200,
-        date: new Date('2024-01-01T09:00:00').getTime()
-    },
-    {
-        id: '2',
-        title: 'Groceries',
-        amount: 300,
-        date: new Date('2024-01-03T14:30:00').getTime()
-    },
-    {
-        id: '3',
-        title: 'Utilities',
-        amount: 150,
-        date: new Date('2024-01-05T11:15:00').getTime()
-    },
-    {
-        id: '4',
-        title: 'Transportation',
-        amount: 100,
-        date: new Date('2024-01-07T08:45:00').getTime()
-    },
-    {
-        id: '5',
-        title: 'Internet',
-        amount: 80,
-        date: new Date('2024-01-10T16:20:00').getTime()
-    },
-    {
-        id: '6',
-        title: 'Phone Bill',
-        amount: 50,
-        date: new Date('2024-01-15T13:00:00').getTime()
-    },
-    {
-        id: '7',
-        title: 'Entertainment',
-        amount: 120,
-        date: new Date('2024-01-20T19:45:00').getTime()
-    }
-]
+import { AddExpense } from "./AddExpense";
 
 function renderTimeAndDate(timestamp: number) {
     const date = new Date(timestamp);
@@ -62,14 +23,28 @@ function renderTimeAndDate(timestamp: number) {
     return <Text style={{ fontFamily: Fonts.ManropeRegular }}>{formattedTime} • {formattedDate}</Text>
 }
 
-export function Spendings() {
+export const Spendings = withObservables([], () => ({
+    expenses: expenseCollection.query(
+        Q.sortBy('created_at', Q.desc),
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
+}))(SpendingsComp) as React.ComponentType;
+
+interface SpendingsProps {
+    expenses: Expense[];
+}
+
+function SpendingsComp({ expenses }: SpendingsProps) {
 
     return (
         <View className="mt-6">
-            <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl mb-5 text-dark-text'>Spendings</Text>
+            <View className="flex-row justify-between mb-5">
+                <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl text-dark-text'>Spendings</Text>
+                <AddExpense />
+            </View>
 
             <FlatList
-                data={DATA}
+                data={expenses}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
@@ -84,12 +59,12 @@ export function Spendings() {
 
                             <View>
                                 <Text style={{ fontFamily: Fonts.ManropeSemiBold }} className="text-dark-text text-xl ">{item.title}</Text>
-                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-dark-tabIconDefault text-base mt-1.5">{renderTimeAndDate(item.date)}</Text>
+                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-dark-tabIconDefault text-base mt-1.5">{renderTimeAndDate(item.createdAt)}</Text>
                             </View>
                         </View>
 
-                        <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-2xl">
-                            ${item.amount}
+                        <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl">
+                            {formatMoney(item.amount)}
                         </Text>
                     </View>
                 )}

@@ -1,16 +1,25 @@
 import { ExpenseLabelCards } from '@/components/ExpenseLabelCards';
 import { Incomes } from '@/components/Incomes';
-import { MonthlyExpensesChart } from '@/components/MonthlyExpensesChart';
 import { Spendings } from '@/components/Spendings';
+import { TotalSpendings } from '@/components/TotalSpendings';
 import { Fonts } from '@/constants/Fonts';
 import { Image, ScrollView, Text, View } from 'react-native';
+
+function getCurrentMonthYear() {
+    const d = new Date();
+
+    const month = d.toLocaleString('default', { month: 'long' });
+    const year = d.getFullYear();
+
+    return `${month}, ${year}`;
+}
 
 export default function HomeScreen() {
 
     return (
         <ScrollView contentContainerClassName='pb-8' className='flex-1 bg-dark-background'>
 
-            <View className='py-14 px-4 bg-[#1F1F1F] rounded-b-[2.5rem]'>
+            <View className='py-14 pb-7 px-4 bg-[#1F1F1F] rounded-b-[2.5rem]'>
                 <View className='flex-row justify-between items-center'>
                     <View className='flex-row items-center'>
                         <Image
@@ -32,22 +41,23 @@ export default function HomeScreen() {
 
                 <View className='mt-8'>
                     <View className='flex-row items-center justify-between'>
-                        <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-xl text-dark-text'>Expenses</Text>
+                        <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-2xl text-dark-text'>
+                            Total Spendings {" "}
+                            <Text
+                                style={{ fontFamily: Fonts.ManropeRegular }}
+                                className='text-base text-dark-tabIconDefault'
+                            >
+                                ({getCurrentMonthYear()})
+                            </Text>
+                        </Text>
                     </View>
 
-                    <View className='flex-row justify-between items-center mt-4'>
-                        <View className='gap-3'>
-                            <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-6xl text-dark-text'>$1,475<Text className='text-dark-text text-xl'>.00</Text></Text>
-                            <Text style={{ fontFamily: Fonts.ManropeRegular }} className='text-base text-dark-tabIconDefault'>August, 2025</Text>
-                        </View>
-
-                        <View className='items-center justify-center -mt-4'>
-                            <MonthlyExpensesChart />
-                        </View>
-                    </View>
+                    <TotalSpendings />
                 </View>
 
-                <ExpenseLabelCards />
+                <View className='mt-8'>
+                    <ExpenseLabelCards />
+                </View>
             </View>
 
             <View className='px-4 pt-6'>

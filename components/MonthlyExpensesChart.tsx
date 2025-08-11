@@ -1,23 +1,61 @@
 import { Colors } from '@/constants/Colors';
-import React from 'react';
+import { Fonts } from '@/constants/Fonts';
+import { categoryCollection, expenseCollection } from '@/lib/db';
+import Category from '@/model/Category.model';
+import Expense from '@/model/Expense.model';
+import { getStartOfMonth, getStartOfNextMonth } from '@/utils/date';
+import { Q } from '@nozbe/watermelondb';
+import { withObservables } from '@nozbe/watermelondb/react';
+import React, { useMemo } from 'react';
 import { PieChart } from 'react-native-gifted-charts';
 
-const pieData = [
-    { value: 50, color: Colors.dark.tint, focused: true },
-    { value: 30, color: Colors.dark.tintSecondary },
-    { value: 20, color: '#242424' },
-];
+export const MonthlyExpensesChart = withObservables([], () => ({
+    categories: categoryCollection.query(),
+    expenses: expenseCollection.query(
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
+}))(MonthlyExpensesChartComp) as React.ComponentType;
 
-export const MonthlyExpensesChart = () => {
+interface MonthlyExpensesChartProps {
+    categories: Category[];
+    expenses: Expense[];
+}
 
+function MonthlyExpensesChartComp({ categories, expenses }: MonthlyExpensesChartProps) {
+
+    const pieData = useMemo(() => {
+        const totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+        const categoryAmounts = categories.map(category => {
+            const amount = expenses
+                .filter(expense => expense.category.id === category.id)
+                .reduce((sum, expense) => sum + expense.amount, 0);
+
+            return {
+                id: category.id,
+                color: category.color,
+                name: category.name,
+                amount
+            }
+        });
+
+        return categoryAmounts.map((category) => {
+            return {
+                value: (category.amount * totalAmount) / 100, color: category.color, text: category.name
+            }
+        });
+    }, [expenses, categories]);
 
     return (
         <PieChart
             donut
-            textColor="black"
-            innerRadius={20}
+            textColor={Colors.dark.text}
+            font={Fonts.ManropeExtraBold}
+            textSize={14}
+            innerRadius={35}
             data={pieData}
-            radius={50}
+            showText
+            radius={120}
             focusOnPress
         />
     );

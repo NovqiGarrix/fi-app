@@ -1,5 +1,5 @@
 // Distinct, accessible palette (tweak as needed)
-const PALETTE = [
+export const PALETTE = [
     "#6C5CE7", "#00B894", "#0984E3", "#E17055", "#E84393",
     "#2ECC71", "#E67E22", "#1ABC9C", "#9B59B6", "#3498DB",
     "#F1C40F", "#E74C3C", "#16A085", "#8E44AD", "#2C3E50"

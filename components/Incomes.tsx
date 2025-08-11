@@ -1,34 +1,37 @@
 import { Fonts } from "@/constants/Fonts";
+import { incomeCollection } from "@/lib/db";
+import Income from "@/model/Income.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
+import { formatMoney } from "@/utils/formatter";
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Q } from "@nozbe/watermelondb";
+import { withObservables } from "@nozbe/watermelondb/react";
 import { FlatList, Text, View } from "react-native";
+import { AddIncome } from "./AddIncome";
 
-const DATA = [
-    {
-        id: '1',
-        title: 'Salary',
-        amount: 5000,
-    },
-    {
-        id: '2',
-        title: 'Freelance Work',
-        amount: 1500,
-    },
-    {
-        id: '3',
-        title: 'Investment Returns',
-        amount: 800,
-    }
-]
+interface IncomesProps {
+    incomes: Income[];
+}
 
-export function Incomes() {
+export const Incomes = withObservables([], () => ({
+    incomes: incomeCollection.query(
+        Q.sortBy('created_at', Q.desc),
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
+}))(IncomesComp) as React.ComponentType;
+
+function IncomesComp({ incomes }: IncomesProps) {
 
     return (
         <View>
-            <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl mb-5 text-dark-text'>My Income</Text>
+            <View className="flex-row items-center justify-between mb-5">
+                <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl text-dark-text'>My Income</Text>
 
+                <AddIncome />
+            </View>
             <FlatList
-                data={DATA}
+                data={incomes}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item.id}
@@ -47,7 +50,7 @@ export function Incomes() {
                             {item.title}
                         </Text>
                         <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-2xl mt-1.5">
-                            ${item.amount}
+                            {formatMoney(item.amount)}
                         </Text>
                     </View>
                 )}

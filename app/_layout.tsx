@@ -1,7 +1,13 @@
+import { database } from '@/lib/db';
+import { DatabaseProvider } from '@nozbe/watermelondb/react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NotifierWrapper } from 'react-native-notifier';
 import 'react-native-reanimated';
 import "../global.css";
 
@@ -13,6 +19,8 @@ function useColorScheme() {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [queryClient] = useState(() => new QueryClient());
+
   const [loaded] = useFonts({
     ManropeBold: require('../assets/fonts/Manrope-Bold.ttf'),
     ManropeExtraBold: require('../assets/fonts/Manrope-ExtraBold.ttf'),
@@ -30,7 +38,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot />
+      <QueryClientProvider client={queryClient}>
+        <DatabaseProvider database={database}>
+          <GestureHandlerRootView>
+            <NotifierWrapper>
+              <Slot />
+            </NotifierWrapper>
+          </GestureHandlerRootView>
+        </DatabaseProvider>
+      </QueryClientProvider>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
   );

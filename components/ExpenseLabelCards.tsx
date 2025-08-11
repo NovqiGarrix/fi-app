@@ -1,67 +1,60 @@
 import { Fonts } from "@/constants/Fonts";
+import { categoryCollection, expenseCollection } from "@/lib/db";
+import Category from "@/model/Category.model";
+import Expense from "@/model/Expense.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
+import { formatMoney } from "@/utils/formatter";
 import { textOn } from "@/utils/label-color";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Q } from "@nozbe/watermelondb";
+import { withObservables } from '@nozbe/watermelondb/react';
+import { useMemo } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { CreateExpenseLabel } from "./CreateExpenseLabel";
 
-const DATA = [
-    {
-        id: '1',
-        label: 'Housing',
-        amount: '$500.00',
-        color: '#FF6347',
-    },
-    {
-        id: '2',
-        label: 'Food',
-        amount: '$200.00',
-        color: '#4682B4',
-    },
-    {
-        id: '3',
-        label: 'Savings',
-        amount: '$300.00',
-        color: '#32CD32',
-    },
-    {
-        id: '4',
-        label: 'Entertainment',
-        amount: '$150.00',
-        color: '#FFD700',
-    },
-    {
-        id: '5',
-        label: 'Utilities',
-        amount: '$100.00',
-        color: '#8A2BE2',
-    },
-]
+interface ExpenseLabelCardsProps {
+    categories: Category[];
+    expenses: Expense[];
+}
 
-export function ExpenseLabelCards() {
+export const ExpenseLabelCards = withObservables([], () => ({
+    categories: categoryCollection.query(),
+    expenses: expenseCollection.query(
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
+}))(ExpenseLabelCardsComp) as React.ComponentType;
+
+function ExpenseLabelCardsComp({ categories, expenses }: ExpenseLabelCardsProps) {
 
     return (
-        <View className="flex-row mr-3 mt-12">
-            <TouchableOpacity className="px-4 py-2 items-start justify-center mr-3 rounded-2xl bg-[#242424]">
-                <AntDesign name="plus" size={24} color="#fff" />
-            </TouchableOpacity>
+        <View className="flex-row mr-3">
+            <CreateExpenseLabel />
 
             <FlatList
-                data={DATA}
+                data={categories}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
-                renderItem={({ item }) => (
-                    <TouchableOpacity className="px-4 py-2 items-start justify-center mr-3 rounded-2xl min-w-[120px]" style={{ backgroundColor: item.color }}>
-                        <Text style={{ fontFamily: Fonts.ManropeRegular, color: textOn(item.color) }} className="text-base">
-                            {item.label}
-                        </Text>
-                        <Text style={{ fontFamily: Fonts.ManropeBold, color: textOn(item.color) }} className="text-xl">
-                            {item.amount}
-                        </Text>
-                    </TouchableOpacity>
-                )}
+                renderItem={({ item }) => <ExpenseLabelCard item={item} expenses={expenses} />}
             />
         </View>
+    )
+
+}
+
+function ExpenseLabelCard({ item, expenses }: { item: Category; expenses: Expense[] }) {
+
+    const amount = useMemo(() => expenses.filter((ex) => ex.category.id === item.id).reduce((prev, acc) => prev + acc.amount, 0), [expenses, item.id]);
+
+    return (
+        <TouchableOpacity className="px-4 h-20 items-start justify-center mr-3 rounded-2xl min-w-[120px]" style={{ backgroundColor: item.color }}>
+            <Text style={{ fontFamily: Fonts.ManropeRegular, color: textOn(item.color) }} className="text-base">
+                {item.name}
+            </Text>
+            <Text style={{ fontFamily: Fonts.ManropeBold, color: textOn(item.color) }} className="text-lg">
+                {formatMoney(amount)}
+            </Text>
+        </TouchableOpacity>
     )
 
 }
