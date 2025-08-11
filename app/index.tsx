@@ -10,7 +10,7 @@ export default function HomeScreen() {
     return (
         <ScrollView contentContainerClassName='pb-8' className='flex-1 bg-dark-background'>
 
-            <View className='py-14 px-4 bg-[#1F1F1F] rounded-b-[2.5rem]'>
+            <View className='py-14 pb-7 px-4 bg-[#1F1F1F] rounded-b-[2.5rem]'>
                 <View className='flex-row justify-between items-center'>
                     <View className='flex-row items-center'>
                         <Image
