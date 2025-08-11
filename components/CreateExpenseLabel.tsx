@@ -47,7 +47,7 @@ export function CreateExpenseLabel() {
 
     return (
         <>
-            <TouchableOpacity disabled={isPending} onPress={() => setShowCreateModal(true)} className="px-4 py-2 items-start justify-center mr-3 rounded-2xl bg-[#242424]">
+            <TouchableOpacity disabled={isPending} onPress={() => setShowCreateModal(true)} className="px-4 h-20 items-start justify-center mr-3 rounded-2xl bg-[#242424]">
                 <AntDesign name="plus" size={24} color="#fff" />
             </TouchableOpacity>
 

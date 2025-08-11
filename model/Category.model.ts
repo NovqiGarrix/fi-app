@@ -1,5 +1,6 @@
-import { Model } from '@nozbe/watermelondb'
-import { children, text } from '@nozbe/watermelondb/decorators'
+import { Model } from '@nozbe/watermelondb';
+import { children, text } from '@nozbe/watermelondb/decorators';
+import Expense from './Expense.model';
 
 class Category extends Model {
     static table = 'categories'
@@ -8,10 +9,10 @@ class Category extends Model {
         expenses: { type: 'has_many', foreignKey: 'category_id' },
     }
 
-    @text('name') name
-    @text('color') color
+    @text('name') name: string;
+    @text('color') color: string;
 
-    @children('expenses') expenses
+    @children('expenses') expenses: Expense[];
 }
 
 export default Category

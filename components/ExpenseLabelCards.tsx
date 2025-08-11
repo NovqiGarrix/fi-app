@@ -11,8 +11,6 @@ interface ExpenseLabelCardsProps {
 
 function ExpenseLabelCardsComp({ categories }: ExpenseLabelCardsProps) {
 
-    console.log({ categories });
-
     return (
         <View className="flex-row mr-3 mt-12">
             <CreateExpenseLabel />
@@ -24,7 +22,7 @@ function ExpenseLabelCardsComp({ categories }: ExpenseLabelCardsProps) {
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
                 renderItem={({ item }) => (
-                    <TouchableOpacity className="px-4 py-2 items-start justify-center mr-3 rounded-2xl min-w-[120px]" style={{ backgroundColor: item.color }}>
+                    <TouchableOpacity className="px-4 h-20 items-start justify-center mr-3 rounded-2xl min-w-[120px]" style={{ backgroundColor: item.color }}>
                         <Text style={{ fontFamily: Fonts.ManropeRegular, color: textOn(item.color) }} className="text-base">
                             {item.name}
                         </Text>
