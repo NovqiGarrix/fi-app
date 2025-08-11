@@ -1,6 +1,7 @@
 import { Fonts } from "@/constants/Fonts";
 import { incomeCollection } from "@/lib/db";
 import Income from "@/model/Income.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
 import { formatMoney } from "@/utils/formatter";
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -15,7 +16,8 @@ interface IncomesProps {
 
 export const Incomes = withObservables([], () => ({
     incomes: incomeCollection.query(
-        Q.sortBy('created_at', Q.desc)
+        Q.sortBy('created_at', Q.desc),
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
     )
 }))(IncomesComp) as React.ComponentType;
 

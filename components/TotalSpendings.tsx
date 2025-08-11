@@ -1,14 +1,18 @@
 import { Fonts } from "@/constants/Fonts";
 import { expenseCollection } from "@/lib/db";
 import Expense from "@/model/Expense.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
 import { formatMoney } from "@/utils/formatter";
+import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useMemo } from "react";
 import { Text, View } from "react-native";
 import { MonthlyExpensesChart } from "./MonthlyExpensesChart";
 
 export const TotalSpendings = withObservables([], () => ({
-    expenses: expenseCollection.query()
+    expenses: expenseCollection.query(
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
 }))(TotalSpendingsComp) as React.ComponentType;
 
 interface TotalSpendingsProps {

@@ -1,6 +1,7 @@
 import { Fonts } from "@/constants/Fonts";
 import { expenseCollection } from "@/lib/db";
 import Expense from "@/model/Expense.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
 import { formatMoney } from "@/utils/formatter";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from "@nozbe/watermelondb";
@@ -24,7 +25,8 @@ function renderTimeAndDate(timestamp: number) {
 
 export const Spendings = withObservables([], () => ({
     expenses: expenseCollection.query(
-        Q.sortBy('created_at', Q.desc)
+        Q.sortBy('created_at', Q.desc),
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
     )
 }))(SpendingsComp) as React.ComponentType;
 

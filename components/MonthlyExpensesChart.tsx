@@ -3,13 +3,17 @@ import { Fonts } from '@/constants/Fonts';
 import { categoryCollection, expenseCollection } from '@/lib/db';
 import Category from '@/model/Category.model';
 import Expense from '@/model/Expense.model';
+import { getStartOfMonth, getStartOfNextMonth } from '@/utils/date';
+import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
 import React, { useMemo } from 'react';
 import { PieChart } from 'react-native-gifted-charts';
 
 export const MonthlyExpensesChart = withObservables([], () => ({
     categories: categoryCollection.query(),
-    expenses: expenseCollection.query()
+    expenses: expenseCollection.query(
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
 }))(MonthlyExpensesChartComp) as React.ComponentType;
 
 interface MonthlyExpensesChartProps {

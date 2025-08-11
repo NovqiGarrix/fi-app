@@ -2,8 +2,10 @@ import { Fonts } from "@/constants/Fonts";
 import { categoryCollection, expenseCollection } from "@/lib/db";
 import Category from "@/model/Category.model";
 import Expense from "@/model/Expense.model";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
 import { formatMoney } from "@/utils/formatter";
 import { textOn } from "@/utils/label-color";
+import { Q } from "@nozbe/watermelondb";
 import { withObservables } from '@nozbe/watermelondb/react';
 import { useMemo } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
@@ -16,7 +18,9 @@ interface ExpenseLabelCardsProps {
 
 export const ExpenseLabelCards = withObservables([], () => ({
     categories: categoryCollection.query(),
-    expenses: expenseCollection.query()
+    expenses: expenseCollection.query(
+        Q.where('created_at', Q.between(getStartOfMonth(), getStartOfNextMonth()))
+    )
 }))(ExpenseLabelCardsComp) as React.ComponentType;
 
 function ExpenseLabelCardsComp({ categories, expenses }: ExpenseLabelCardsProps) {
