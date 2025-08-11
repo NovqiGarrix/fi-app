@@ -6,6 +6,8 @@ import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NotifierWrapper } from 'react-native-notifier';
 import 'react-native-reanimated';
 import "../global.css";
 
@@ -38,7 +40,11 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <QueryClientProvider client={queryClient}>
         <DatabaseProvider database={database}>
-          <Slot />
+          <GestureHandlerRootView>
+            <NotifierWrapper>
+              <Slot />
+            </NotifierWrapper>
+          </GestureHandlerRootView>
         </DatabaseProvider>
       </QueryClientProvider>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />

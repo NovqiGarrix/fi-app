@@ -2,6 +2,7 @@ import { Fonts } from "@/constants/Fonts";
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FlatList, Text, View } from "react-native";
+import { AddIncome } from "./AddIncome";
 
 const DATA = [
     {
@@ -25,8 +26,11 @@ export function Incomes() {
 
     return (
         <View>
-            <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl mb-5 text-dark-text'>My Income</Text>
+            <View className="flex-row items-center justify-between mb-5">
+                <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl text-dark-text'>My Income</Text>
 
+                <AddIncome />
+            </View>
             <FlatList
                 data={DATA}
                 horizontal

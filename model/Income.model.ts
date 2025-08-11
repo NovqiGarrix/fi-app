@@ -5,7 +5,7 @@ class Income extends Model {
     static table = 'incomes'
 
     @text('title') title!: string;
-    @field('amount') amount!: string;
+    @field('amount') amount!: number;
     @date('created_at') createdAt!: number;
 }
 
