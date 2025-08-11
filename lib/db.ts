@@ -19,3 +19,7 @@ export const database = new Database({
     adapter,
     modelClasses: [Category, Income, Expense],
 });
+
+export const categoryCollection = database.collections.get<Category>('categories');
+export const incomeCollection = database.collections.get<Income>('incomes');
+export const expenseCollection = database.collections.get<Expense>('expenses');

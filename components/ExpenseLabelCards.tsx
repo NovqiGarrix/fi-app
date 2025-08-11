@@ -1,13 +1,18 @@
 import { Fonts } from "@/constants/Fonts";
+import { categoryCollection } from "@/lib/db";
 import Category from "@/model/Category.model";
 import { textOn } from "@/utils/label-color";
-import { compose, withDatabase, withObservables } from '@nozbe/watermelondb/react';
+import { withObservables } from '@nozbe/watermelondb/react';
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { CreateExpenseLabel } from "./CreateExpenseLabel";
 
 interface ExpenseLabelCardsProps {
     categories: Category[]
 }
+
+export const ExpenseLabelCards = withObservables([], () => ({
+    categories: categoryCollection.query()
+}))(ExpenseLabelCardsComp) as React.ComponentType;
 
 function ExpenseLabelCardsComp({ categories }: ExpenseLabelCardsProps) {
 
@@ -36,16 +41,3 @@ function ExpenseLabelCardsComp({ categories }: ExpenseLabelCardsProps) {
     )
 
 }
-
-// const enhance = withDatabase(
-//     withObservables(['categories'], ({ categories }) => ({
-//         categories
-//     }))
-// );
-
-export const ExpenseLabelCards = compose(
-    withDatabase,
-    withObservables([], ({ database }) => ({
-        categories: database.get('categories').query()
-    }))
-)(ExpenseLabelCardsComp);
