@@ -1,6 +1,7 @@
 import { Fonts } from "@/constants/Fonts";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FlatList, Text, View } from "react-native";
+import { AddExpense } from "./AddExpense";
 
 
 const DATA = [
@@ -66,7 +67,10 @@ export function Spendings() {
 
     return (
         <View className="mt-6">
-            <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl mb-5 text-dark-text'>Spendings</Text>
+            <View className="flex-row justify-between mb-5">
+                <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl text-dark-text'>Spendings</Text>
+                <AddExpense />
+            </View>
 
             <FlatList
                 data={DATA}

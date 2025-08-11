@@ -11,7 +11,7 @@ class Expense extends Model {
     }
 
     @text('title') title!: string;
-    @field('amount') amount!: string;
+    @field('amount') amount!: number;
     @relation('categories', 'category_id') category!: Relation<Category>;
     @date('created_at') createdAt!: number;
 }
