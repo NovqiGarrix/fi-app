@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { Picker as RNPickerSelect } from '@react-native-picker/picker';
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Notifier, NotifierComponents } from "react-native-notifier";
@@ -37,6 +37,12 @@ export function AddExpense() {
         queryKey: ['categories'],
         queryFn: () => categoryCollection.query().fetch()
     });
+
+    useEffect(() => {
+        if (categories) {
+            form.setValue('categoryId', categories[0].id);
+        }
+    }, [categories, form]);
 
     const { mutateAsync: addExpense, isPending } = useMutation({
         mutationKey: ['addExpense'],
