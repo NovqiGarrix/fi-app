@@ -63,7 +63,7 @@ function SpendingsComp({ expenses }: SpendingsProps) {
                             </View>
                         </View>
 
-                        <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-2xl">
+                        <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl">
                             {formatMoney(item.amount)}
                         </Text>
                     </View>
