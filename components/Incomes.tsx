@@ -1,28 +1,25 @@
 import { Fonts } from "@/constants/Fonts";
+import { incomeCollection } from "@/lib/db";
+import Income from "@/model/Income.model";
+import { formatMoney } from "@/utils/formatter";
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Q } from "@nozbe/watermelondb";
+import { withObservables } from "@nozbe/watermelondb/react";
 import { FlatList, Text, View } from "react-native";
 import { AddIncome } from "./AddIncome";
 
-const DATA = [
-    {
-        id: '1',
-        title: 'Salary',
-        amount: 5000,
-    },
-    {
-        id: '2',
-        title: 'Freelance Work',
-        amount: 1500,
-    },
-    {
-        id: '3',
-        title: 'Investment Returns',
-        amount: 800,
-    }
-]
+interface IncomesProps {
+    incomes: Income[];
+}
 
-export function Incomes() {
+export const Incomes = withObservables([], () => ({
+    incomes: incomeCollection.query(
+        Q.sortBy('created_at', Q.desc)
+    )
+}))(IncomesComp) as React.ComponentType;
+
+function IncomesComp({ incomes }: IncomesProps) {
 
     return (
         <View>
@@ -32,7 +29,7 @@ export function Incomes() {
                 <AddIncome />
             </View>
             <FlatList
-                data={DATA}
+                data={incomes}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item.id}
@@ -51,7 +48,7 @@ export function Incomes() {
                             {item.title}
                         </Text>
                         <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-2xl mt-1.5">
-                            ${item.amount}
+                            {formatMoney(item.amount)}
                         </Text>
                     </View>
                 )}
