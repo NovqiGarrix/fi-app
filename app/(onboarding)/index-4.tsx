@@ -1,8 +1,9 @@
 import { Fonts } from '@/constants/Fonts'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { router } from 'expo-router'
+import LottieView from 'lottie-react-native'
 import { useEffect } from 'react'
-import { BackHandler, Pressable, Text } from 'react-native'
+import { BackHandler, Dimensions, Pressable, Text, View } from 'react-native'
 import Animated, {
     FadeInUp,
     runOnJS,
@@ -60,6 +61,15 @@ export default function OnboardingDoneScreen() {
                     You can start tracking transactions right away. Let&apos;s build better financial habits together.
                 </Text>
             </Animated.View>
+
+            <View className="self-center absolute left-0">
+                <LottieView
+                    source={require('../../assets/Confetti.json')}
+                    autoPlay
+                    loop={false}
+                    style={{ width: 500, height: Dimensions.get('window').height }}
+                />
+            </View>
 
             <Animated.View style={buttonStyle}>
                 <Pressable

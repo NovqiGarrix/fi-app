@@ -1,4 +1,5 @@
 import { Fonts } from '@/constants/Fonts'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -11,6 +12,10 @@ import Animated, {
     withSpring,
     withTiming,
 } from 'react-native-reanimated'
+
+if (process.env.EXPO_PUBLIC_RESET_ONBOARDING) {
+    AsyncStorage.removeItem('onboardingComplete');
+}
 
 export default function OnboardingWelcomeScreen() {
     const opacity = useSharedValue(0)
