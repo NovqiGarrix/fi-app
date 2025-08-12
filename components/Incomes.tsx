@@ -8,6 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { FlatList, Text, View } from "react-native";
+import Animated, { FadeInRight } from "react-native-reanimated";
 import { AddIncome } from "./AddIncome";
 
 interface IncomesProps {
@@ -36,8 +37,8 @@ function IncomesComp({ incomes }: IncomesProps) {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
-                renderItem={({ item }) => (
-                    <View className="p-7 mr-3 rounded-3xl min-w-[200px] bg-[#1E1E1E]">
+                renderItem={({ item, index }) => (
+                    <Animated.View entering={FadeInRight.duration(400).delay(index * 50)} className="p-7 mr-3 rounded-3xl min-w-[200px] bg-[#1E1E1E]">
                         <View className="flex-row items-center justify-between mb-2">
                             <View className="w-14 h-14 items-center justify-center border border-dark-tabIconDefault/20 bg-[#212121] rounded-full">
                                 <Fontisto name="dollar" size={24} color="#fff" />
@@ -52,7 +53,7 @@ function IncomesComp({ incomes }: IncomesProps) {
                         <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-2xl mt-1.5">
                             {formatMoney(item.amount)}
                         </Text>
-                    </View>
+                    </Animated.View>
                 )}
             />
 

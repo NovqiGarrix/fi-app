@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { FlatList, Text, View } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import { AddExpense } from "./AddExpense";
 
 function renderTimeAndDate(timestamp: number) {
@@ -49,9 +50,8 @@ function SpendingsComp({ expenses }: SpendingsProps) {
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
                 ItemSeparatorComponent={() => <View className="h-7" />}
-                renderItem={({ item }) => (
-                    <View className="flex-row items-center justify-between">
-
+                renderItem={({ item, index }) => (
+                    <Animated.View entering={FadeInUp.duration(400).delay(index * 50)} className="flex-row items-center justify-between">
                         <View className="flex-row items-center gap-3">
                             <View className="w-16 h-16 items-center justify-center bg-[#212121] rounded-full">
                                 <Ionicons name="arrow-up-outline" size={28} color="#fff" />
@@ -66,7 +66,7 @@ function SpendingsComp({ expenses }: SpendingsProps) {
                         <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl">
                             {formatMoney(item.amount)}
                         </Text>
-                    </View>
+                    </Animated.View>
                 )}
             />
 
