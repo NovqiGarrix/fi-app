@@ -1,5 +1,7 @@
-import { database } from '@/lib/db';
+import { categoryCollection, database } from '@/lib/db';
+import { DEFAULT_CATEGORIES } from '@/utils/constants';
 import { DatabaseProvider } from '@nozbe/watermelondb/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
@@ -12,6 +14,29 @@ import 'react-native-reanimated';
 import "../global.css";
 
 // import { useColorScheme } from '@/hooks/useColorScheme';
+
+if (process.env.EXPO_PUBLIC_RESET_ONBOARDING) {
+  AsyncStorage.removeItem('onboardingComplete');
+}
+
+if (process.env.EXPO_PUBLIC_RESET_DB) {
+  database.write(async () => {
+    await database.unsafeResetDatabase();
+
+    // Insert default categories or other initial data if needed
+    await database.batch(
+      DEFAULT_CATEGORIES.map((c) => {
+        return categoryCollection.prepareCreate((category) => {
+          category.name = c.name;
+          category.color = c.color;
+        })
+      })
+    );
+  })
+    .then(() => {
+      console.log('Database reset successfully');
+    }).catch(console.error);
+}
 
 function useColorScheme() {
   return 'dark';
