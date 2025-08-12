@@ -23,6 +23,16 @@ function TotalSpendingsComp({ expenses }: TotalSpendingsProps) {
 
     const amount = useMemo(() => expenses.reduce((prev, acc) => prev + acc.amount, 0), [expenses]);
 
+    if (amount === 0) {
+        return (
+            <View className='mt-5 items-center'>
+                <Text style={{ fontFamily: Fonts.ManropeRegular }} className='text-lg text-dark-text'>
+                    No expenses recorded for this month.
+                </Text>
+            </View>
+        );
+    }
+
     return (
         <View className='gap-3 mt-3'>
             <View className='mt-5 items-center'>
@@ -31,7 +41,7 @@ function TotalSpendingsComp({ expenses }: TotalSpendingsProps) {
 
             <Text
                 style={{ fontFamily: Fonts.ManropeBold }}
-                className='text-5xl mt-2 text-dark-text text-center'
+                className='text-5xl text-dark-text text-center'
             >
                 {formatMoney(amount)}
             </Text>

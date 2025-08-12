@@ -55,6 +55,14 @@ function IncomesComp({ incomes }: IncomesProps) {
                     </View>
                 )}
             />
+
+            {incomes.length <= 0 && (
+                <View className="items-center justify-center">
+                    <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-white text-lg">
+                        You haven&apos;t added any income yet. Press the plus button above to add your first income.
+                    </Text>
+                </View>
+            )}
         </View>
     )
 

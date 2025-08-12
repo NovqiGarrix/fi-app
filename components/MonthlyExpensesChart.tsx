@@ -56,7 +56,8 @@ function MonthlyExpensesChartComp({ categories, expenses }: MonthlyExpensesChart
             data={pieData}
             showText
             radius={120}
-            focusOnPress
+            isAnimated
+            paddingVertical={5}
         />
     );
 };

@@ -69,6 +69,14 @@ function SpendingsComp({ expenses }: SpendingsProps) {
                     </View>
                 )}
             />
+
+            {expenses.length <= 0 && (
+                <View className="items-center justify-center">
+                    <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-white text-lg">
+                        You haven&apos;t added any expense yet. Press the plus button above to add your first expense.
+                    </Text>
+                </View>
+            )}
         </View>
     )
 
