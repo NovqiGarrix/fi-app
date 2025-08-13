@@ -40,8 +40,10 @@ function MonthlyExpensesChartComp({ categories, expenses }: MonthlyExpensesChart
         });
 
         return categoryAmounts.map((category) => {
+            const percentage = totalAmount > 0 ? (category.amount / totalAmount) * 100 : 0;
+
             return {
-                value: (category.amount * totalAmount) / 100, color: category.color, text: category.name
+                value: percentage, color: category.color, text: `${percentage.toFixed(0)}%`
             }
         });
     }, [expenses, categories]);
