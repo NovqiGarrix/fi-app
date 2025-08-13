@@ -3,11 +3,13 @@ import { database } from '@/lib/db';
 import Category from '@/model/Category.model';
 import { nextLabelColor } from '@/utils/label-color';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
 
 export function CreateExpenseLabel() {
+
+    const queryClient = useQueryClient();
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [labelName, setLabelName] = useState('');
@@ -39,9 +41,10 @@ export function CreateExpenseLabel() {
             console.error('Error creating label:', error);
             ToastAndroid.show(error.message, ToastAndroid.LONG);
         },
-        onSuccess: () => {
+        onSuccess: async () => {
             setLabelName('');
             setShowCreateModal(false);
+            await queryClient.refetchQueries({ queryKey: ['categories'] });
         }
     });
 
