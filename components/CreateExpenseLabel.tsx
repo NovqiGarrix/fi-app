@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { database } from '@/lib/db';
 import Category from '@/model/Category.model';
@@ -5,7 +6,7 @@ import { nextLabelColor } from '@/utils/label-color';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
 
 export function CreateExpenseLabel() {
 
@@ -74,17 +75,24 @@ export function CreateExpenseLabel() {
                         <View className="flex-row justify-end gap-3">
                             <TouchableOpacity
                                 className="px-4 py-2.5 rounded-xl bg-neutral-800"
-                                onPress={() => setShowCreateModal(false)}
+                                onPress={() => {
+                                    setShowCreateModal(false)
+                                    setLabelName('');
+                                }}
                                 disabled={isPending}
                             >
                                 <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white">Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                className="px-4 py-2.5 rounded-xl bg-dark-text"
+                                className="w-20 justify-center flex-row items-center py-2.5 rounded-xl bg-dark-text"
                                 onPress={() => mutateAsync()}
                                 disabled={!labelName.trim() || isPending}
                             >
-                                <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-black">Create</Text>
+                                {isPending ? (
+                                    <ActivityIndicator size="small" color={Colors.dark.background} />
+                                ) : (
+                                    <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-black">Create</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>

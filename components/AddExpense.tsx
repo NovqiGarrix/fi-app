@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { categoryCollection, expenseCollection } from "@/lib/db";
+import { formatToRupiah, parseFromRupiah } from "@/utils/formatter";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDatabase } from "@nozbe/watermelondb/react";
@@ -8,7 +9,7 @@ import { Picker as RNPickerSelect } from '@react-native-picker/picker';
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Notifier, NotifierComponents } from "react-native-notifier";
 import { z } from 'zod';
 
@@ -24,6 +25,7 @@ export function AddExpense() {
 
     const database = useDatabase();
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [displayAmount, setDisplayAmount] = useState('');
 
     const form = useForm<AddExpenseSchema>({
         resolver: zodResolver(addExpenseSchema),
@@ -44,6 +46,12 @@ export function AddExpense() {
         }
     }, [categories, form]);
 
+    useEffect(() => {
+        if (!showCreateModal) {
+            setDisplayAmount('');
+        }
+    }, [showCreateModal]);
+
     const { mutateAsync: addExpense, isPending } = useMutation({
         mutationKey: ['addExpense'],
         mutationFn: async (data: AddExpenseSchema) => {
@@ -61,6 +69,7 @@ export function AddExpense() {
         },
         onSuccess: () => {
             form.reset();
+            setDisplayAmount('');
             setShowCreateModal(false);
             setTimeout(() => {
                 Notifier.showNotification({
@@ -99,7 +108,7 @@ export function AddExpense() {
                                         onChangeText={onChange}
                                         placeholder="What is this expense for?"
                                         placeholderTextColor="#9CA3AF"
-                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3 mb-5"
+                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3"
                                         style={{ fontFamily: Fonts.ManropeRegular }}
                                         autoFocus
                                         returnKeyType="next"
@@ -107,9 +116,12 @@ export function AddExpense() {
                                     />
                                 )}
                             />
+                            {form.formState.errors.title ? (
+                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-red-400 mt-1">{form.formState.errors.title.message}</Text>
+                            ) : null}
                         </View>
 
-                        <View>
+                        <View className="mt-4">
                             <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl mb-3">
                                 Amount
                             </Text>
@@ -118,11 +130,20 @@ export function AddExpense() {
                                 name="amount"
                                 render={({ field: { onChange, value } }) => (
                                     <TextInput
-                                        value={value?.toString() ?? ''}
-                                        onChangeText={(v) => onChange(Number(v))}
+                                        value={displayAmount}
+                                        onChangeText={(amountInRupiah) => {
+                                            if (!value && amountInRupiah === '0') {
+                                                ToastAndroid.show('Amount cannot be zero', ToastAndroid.SHORT);
+                                                return;
+                                            }
+
+                                            const numericValue = parseFromRupiah(amountInRupiah);
+                                            setDisplayAmount(formatToRupiah(numericValue));
+                                            onChange(numericValue);
+                                        }}
                                         placeholder="How much did you spend?"
                                         placeholderTextColor="#9CA3AF"
-                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3 mb-5"
+                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3"
                                         style={{ fontFamily: Fonts.ManropeRegular }}
                                         returnKeyType="done"
                                         editable={!isPending}
@@ -131,9 +152,12 @@ export function AddExpense() {
                                     />
                                 )}
                             />
+                            {form.formState.errors.amount ? (
+                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-red-400 mt-1">{form.formState.errors.amount.message}</Text>
+                            ) : null}
                         </View>
 
-                        <View className="mb-1">
+                        <View className="mt-4">
                             <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl mb-3">
                                 Category
                             </Text>
@@ -156,22 +180,32 @@ export function AddExpense() {
                                     </RNPickerSelect>
                                 )}
                             />
+                            {form.formState.errors.categoryId ? (
+                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-red-400 mt-1">{form.formState.errors.categoryId.message}</Text>
+                            ) : null}
                         </View>
 
                         <View className="flex-row justify-end gap-3">
                             <TouchableOpacity
                                 className="px-4 py-2.5 rounded-xl bg-neutral-800"
-                                onPress={() => setShowCreateModal(false)}
+                                onPress={() => {
+                                    setShowCreateModal(false)
+                                    form.reset();
+                                }}
                                 disabled={isPending}
                             >
                                 <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white">Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                className="px-4 py-2.5 rounded-xl bg-dark-text"
+                                className="w-20 items-center justify-center py-2.5 rounded-xl bg-dark-text"
                                 onPress={form.handleSubmit((data) => addExpense(data))}
                                 disabled={isPending}
                             >
-                                <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-black">Add</Text>
+                                {isPending ? (
+                                    <ActivityIndicator size="small" color={Colors.dark.background} />
+                                ) : (
+                                    <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-black">Add</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>

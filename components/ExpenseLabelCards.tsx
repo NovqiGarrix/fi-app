@@ -48,7 +48,7 @@ function ExpenseLabelCard({ item, expenses, index }: { item: Category; expenses:
     const amount = useMemo(() => expenses.filter((ex) => ex.category.id === item.id).reduce((prev, acc) => prev + acc.amount, 0), [expenses, item.id]);
 
     return (
-        <Animated.View entering={FadeInRight.duration(400).delay(index * 50)} className="px-4 h-20 items-start justify-center mr-3 rounded-2xl min-w-[120px]" style={{ backgroundColor: item.color }}>
+        <Animated.View entering={FadeInRight.duration(400).delay(index * 50)} className="px-4 items-start justify-center mr-3 rounded-2xl min-w-[120px]" style={{ backgroundColor: item.color }}>
             <Text style={{ fontFamily: Fonts.ManropeRegular, color: textOn(item.color) }} className="text-base">
                 {item.name}
             </Text>

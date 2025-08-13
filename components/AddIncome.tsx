@@ -1,26 +1,31 @@
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { incomeCollection } from "@/lib/db";
+import { formatToRupiah, parseFromRupiah } from "@/utils/formatter";
 import { addIncomeSchema, type AddIncomeSchema } from "@/zod/income.zod";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Notifier, NotifierComponents } from "react-native-notifier";
 
 export function AddIncome() {
 
     const database = useDatabase();
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [displayAmount, setDisplayAmount] = useState('');
+
+    useEffect(() => {
+        setDisplayAmount('');
+    }, [showCreateModal]);
 
     const form = useForm<AddIncomeSchema>({
         resolver: zodResolver(addIncomeSchema),
         defaultValues: {
             title: '',
-            amount: 0,
         }
     });
 
@@ -41,6 +46,7 @@ export function AddIncome() {
         onSuccess: () => {
             form.reset();
             setShowCreateModal(false);
+            setDisplayAmount('');
             setTimeout(() => {
                 Notifier.showNotification({
                     title: 'Success: Add Income',
@@ -80,7 +86,7 @@ export function AddIncome() {
                                         onChangeText={onChange}
                                         placeholder="Where is this income coming from?"
                                         placeholderTextColor="#9CA3AF"
-                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3 mb-5"
+                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3"
                                         style={{ fontFamily: Fonts.ManropeRegular }}
                                         autoFocus
                                         returnKeyType="next"
@@ -88,8 +94,11 @@ export function AddIncome() {
                                     />
                                 )}
                             />
+                            {form.formState.errors.title ? (
+                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-red-400 mt-1">{form.formState.errors.title.message}</Text>
+                            ) : null}
                         </View>
-                        <View>
+                        <View className="mt-4">
                             <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl mb-3">
                                 Amount
                             </Text>
@@ -98,33 +107,54 @@ export function AddIncome() {
                                 name="amount"
                                 render={({ field: { onChange, value } }) => (
                                     <TextInput
-                                        value={value.toString()}
-                                        onChangeText={(value) => onChange(Number(value))}
-                                        placeholder="Income from?"
+                                        value={displayAmount}
+                                        onChangeText={(amountInRupiah) => {
+                                            if (!value && amountInRupiah === '0') {
+                                                ToastAndroid.show('Amount cannot be zero', ToastAndroid.SHORT);
+                                                return;
+                                            }
+
+                                            const numericValue = parseFromRupiah(amountInRupiah);
+                                            setDisplayAmount(formatToRupiah(numericValue));
+                                            onChange(numericValue)
+                                        }}
+                                        placeholder="How much did you earn?"
                                         placeholderTextColor="#9CA3AF"
-                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3 mb-5"
+                                        className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3"
                                         style={{ fontFamily: Fonts.ManropeRegular }}
                                         returnKeyType="done"
+                                        keyboardType="numeric"
                                         editable={!isPending}
                                         onSubmitEditing={form.handleSubmit((data) => addIncome(data))}
                                     />
                                 )}
                             />
+
+                            {form.formState.errors.amount ? (
+                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-red-400 mt-1">{form.formState.errors.amount.message}</Text>
+                            ) : null}
                         </View>
-                        <View className="flex-row justify-end gap-3">
+                        <View className="flex-row justify-end gap-3 mt-5">
                             <TouchableOpacity
                                 className="px-4 py-2.5 rounded-xl bg-neutral-800"
-                                onPress={() => setShowCreateModal(false)}
+                                onPress={() => {
+                                    setShowCreateModal(false);
+                                    form.reset();
+                                }}
                                 disabled={isPending}
                             >
                                 <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white">Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                className="px-4 py-2.5 rounded-xl bg-dark-text"
+                                className="w-20 items-center justify-center py-2.5 rounded-xl bg-dark-text"
                                 onPress={form.handleSubmit((data) => addIncome(data))}
                                 disabled={isPending}
                             >
-                                <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-black">Add</Text>
+                                {isPending ? (
+                                    <ActivityIndicator size="small" color={Colors.dark.background} />
+                                ) : (
+                                    <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-black">Add</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>
