@@ -6,22 +6,18 @@ import { formatMoney } from "@/utils/formatter";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
+import { useQuery } from "@tanstack/react-query";
 import { FlatList, Text, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { AddExpense } from "./AddExpense";
 
-function renderTimeAndDate(timestamp: number) {
+function formatDate(timestamp: number) {
     const date = new Date(timestamp);
 
     const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = date.toLocaleDateString('id-ID', options);
-    const formattedTime = date.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-    });
 
-    return <Text style={{ fontFamily: Fonts.ManropeRegular }}>{formattedTime} • {formattedDate}</Text>
+    return formattedDate;
 }
 
 export const Spendings = withObservables([], () => ({
@@ -50,24 +46,7 @@ function SpendingsComp({ expenses }: SpendingsProps) {
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
                 ItemSeparatorComponent={() => <View className="h-7" />}
-                renderItem={({ item, index }) => (
-                    <Animated.View entering={FadeInUp.duration(400).delay(index * 50)} className="flex-row items-center justify-between">
-                        <View className="flex-row items-center gap-3">
-                            <View className="w-16 h-16 items-center justify-center bg-[#212121] rounded-full">
-                                <Ionicons name="arrow-up-outline" size={28} color="#fff" />
-                            </View>
-
-                            <View>
-                                <Text style={{ fontFamily: Fonts.ManropeSemiBold }} className="text-dark-text text-xl ">{item.title}</Text>
-                                <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-dark-tabIconDefault text-base mt-1.5">{renderTimeAndDate(item.createdAt)}</Text>
-                            </View>
-                        </View>
-
-                        <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl">
-                            {formatMoney(item.amount)}
-                        </Text>
-                    </Animated.View>
-                )}
+                renderItem={({ item, index }) => <Spending item={item} index={index} />}
             />
 
             {expenses.length <= 0 && (
@@ -80,4 +59,33 @@ function SpendingsComp({ expenses }: SpendingsProps) {
         </View>
     )
 
+}
+
+function Spending({ item, index }: { item: Expense; index: number }) {
+
+    const { data: category, isPending: isGettingCategory } = useQuery({
+        queryKey: ['category', item.category.id],
+        queryFn: () => item.category.fetch()
+    });
+
+    return (
+        <Animated.View entering={FadeInUp.duration(400).delay(index * 50)} className="flex-row items-center justify-between">
+            <View className="flex-row items-center gap-3">
+                <View className="w-16 h-16 items-center justify-center bg-[#212121] rounded-full">
+                    <Ionicons name="arrow-up-outline" size={28} color="#fff" />
+                </View>
+
+                <View>
+                    <Text style={{ fontFamily: Fonts.ManropeSemiBold }} className="text-dark-text text-xl ">{item.title}</Text>
+                    <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-dark-tabIconDefault text-base mt-1.5">
+                        {isGettingCategory ? '...' : category?.name} • {formatDate(item.createdAt)}
+                    </Text>
+                </View>
+            </View>
+
+            <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl">
+                {formatMoney(item.amount)}
+            </Text>
+        </Animated.View>
+    )
 }
