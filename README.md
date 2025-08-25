@@ -1,39 +1,50 @@
 # Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A simple app to track your income and expenses. Built with Expo, NativeWind and WatermelonDB.
+
+## WatermelonDB
+This app uses WatermelonDB as its database. WatermelonDB is a high-performance reactive database for React and React Native. The reason why I chose WatermelonDB is because it is optimized for a large amount of data and it is also offline-first. It is also possible to sync the local data with your server. You can learn more about [WatermelonDB](https://watermelondb.dev/).
 
 ## Get started
 
 1. Install dependencies
 
    ```bash
-   npm install
+   bun install
    ```
 
 2. Start the app
 
    ```bash
-   npx expo start
+   bun run android
    ```
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+## Preview Build
+If you want to try the app with your physical Android device, you need to build the app first
 ```bash
-npm run reset-project
+bun run preview
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then share the `.apk` file to your device and install it.
+
+## Added New Features or Fix Bugs
+If you added a new feature or fixed a bug, please update the `version` and `android.versionCode` (just increment them) in `app.json`. It works the same if you installed the app in your device and you want to update it.
+
+## Screenshots
+Here are some screenshots of the app:
+### Boarding Screen
+![boarding 1](./screenshots/boarding-1.png)
+![boarding 2](./screenshots/boarding-2.png)
+![boarding 3](./screenshots/boarding-3.png)
+![final boarding](./screenshots/final-boarding.png)
+
+### Home Screen
+![home](./screenshots/main-screen.png)
+![home 2](./screenshots/main-screen-2.png)
+![filter chart expenses](./screenshots/chart-expense-filter.png)
+
+Check all screenshots in the [screenshots](./screenshots) folder.
 
 ## Learn more
 
@@ -41,10 +52,3 @@ To learn more about developing your project with Expo, look at the following res
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
