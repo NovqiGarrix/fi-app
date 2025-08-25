@@ -2,7 +2,7 @@
   "expo": {
     "name": "FiApp",
     "slug": "fi-app",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "fiapp",
@@ -18,7 +18,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.novqigarrix.fiapp"
+      "package": "com.novqigarrix.fiapp",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
