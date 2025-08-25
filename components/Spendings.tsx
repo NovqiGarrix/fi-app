@@ -1,15 +1,19 @@
 import { Fonts } from "@/constants/Fonts";
 import { expenseCollection } from "@/lib/db";
 import Expense from "@/model/Expense.model";
+import { selectedCategoryFilterAtom } from "@/stores/spendings.store";
 import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
 import { formatMoney } from "@/utils/formatter";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { useMemo } from "react";
 import { FlatList, Text, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { AddExpense } from "./AddExpense";
+import { SpendingCategoryFilter } from "./SpendingCategoryFilter";
 
 function formatDate(timestamp: number) {
     const date = new Date(timestamp);
@@ -33,15 +37,24 @@ interface SpendingsProps {
 
 function SpendingsComp({ expenses }: SpendingsProps) {
 
+    const [filter] = useAtom(selectedCategoryFilterAtom);
+
+    const filteredExpenses = useMemo(() => {
+        return filter === 'all' ? expenses : expenses.filter((exp) => exp.category.id === filter);
+    }, [filter, expenses]);
+
     return (
         <View className="mt-6">
             <View className="flex-row justify-between mb-5">
                 <Text style={{ fontFamily: Fonts.ManropeBold }} className='text-3xl text-dark-text'>Spendings</Text>
-                <AddExpense />
+                <View className="gap-5 flex-row items-center">
+                    <AddExpense />
+                    <SpendingCategoryFilter />
+                </View>
             </View>
 
             <FlatList
-                data={expenses}
+                data={filteredExpenses}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.id}
                 style={{ flexGrow: 0 }}
@@ -49,7 +62,7 @@ function SpendingsComp({ expenses }: SpendingsProps) {
                 renderItem={({ item, index }) => <Spending item={item} index={index} />}
             />
 
-            {expenses.length <= 0 && (
+            {filteredExpenses.length <= 0 && (
                 <View className="items-center justify-center">
                     <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-white text-lg">
                         You haven&apos;t added any expense yet. Press the plus button above to add your first expense.

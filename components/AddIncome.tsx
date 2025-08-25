@@ -66,7 +66,7 @@ export function AddIncome() {
 
     return (
         <>
-            <TouchableOpacity onPress={() => setShowCreateModal(true)} hitSlop={10}>
+            <TouchableOpacity onPress={() => setShowCreateModal(true)} hitSlop={5}>
                 <Ionicons name="add-circle" size={32} color={Colors.dark.text} />
             </TouchableOpacity>
 
