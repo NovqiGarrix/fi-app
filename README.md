@@ -33,21 +33,21 @@ If you added a new feature or fixed a bug, please update the `version` and `andr
 
 ## Screenshots
 Here are some screenshots of the app:
+
 ### Boarding Screen
-![boarding 1](./screenshots/boarding-1.png)
-![boarding 2](./screenshots/boarding-2.png)
-![boarding 3](./screenshots/boarding-3.png)
-![final boarding](./screenshots/final-boarding.png)
+<img src="./screenshots/boarding-1.png" alt="boarding 1" width="200"> <img src="./screenshots/boarding-2.png" alt="boarding 2" width="200"> <img src="./screenshots/boarding-3.png" alt="boarding 3" width="200"> <img src="./screenshots/final-boarding.png" alt="final boarding" width="200">
 
 ### Home Screen
-![home](./screenshots/main-screen.png)
-![home 2](./screenshots/main-screen-2.png)
-![filter chart expenses](./screenshots/chart-expense-filter.png)
+<img src="./screenshots/main-screen.png" alt="home" width="200"> <img src="./screenshots/main-screen-2.png" alt="home 2" width="200"> <img src="./screenshots/chart-expense-filter.png" alt="filter chart expenses" width="200">
 
 Check all screenshots in the [screenshots](./screenshots) folder.
 
 ## Learn more
 
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 To learn more about developing your project with Expo, look at the following resources:
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
