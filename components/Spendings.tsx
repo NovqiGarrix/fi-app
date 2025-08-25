@@ -84,13 +84,13 @@ function Spending({ item, index }: { item: Expense; index: number }) {
     return (
         <Animated.View entering={FadeInUp.duration(400).delay(index * 50)} className="flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
-                <View className="w-16 h-16 items-center justify-center bg-[#212121] rounded-full">
-                    <Ionicons name="arrow-up-outline" size={28} color="#fff" />
+                <View className="w-14 h-14 items-center justify-center bg-[#212121] rounded-full">
+                    <Ionicons name="arrow-up-outline" size={25} color="#fff" />
                 </View>
 
                 <View>
                     <Text style={{ fontFamily: Fonts.ManropeSemiBold }} className="text-dark-text text-xl ">{item.title}</Text>
-                    <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-dark-tabIconDefault text-base mt-1.5">
+                    <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-dark-tabIconDefault text-sm mt-1.5">
                         {isGettingCategory ? '...' : category?.name} • {formatDate(item.createdAt)}
                     </Text>
                 </View>
