@@ -138,7 +138,7 @@ export default function OnboardingCategories() {
             </Text>
 
             <View className="flex-row items-center justify-between mt-4">
-                <Pressable disabled={true} onPress={toggleAll}>
+                <Pressable disabled={isContinuing} onPress={toggleAll}>
                     <Text style={{ fontFamily: Fonts.ManropeRegular }} className="text-[#97E0F7] font-semibold disabled:opacity-70">
                         {allSelected ? 'Deselect all' : 'Select all'}
                     </Text>
