@@ -1,4 +1,5 @@
 import { ExpenseLabelCards } from '@/components/ExpenseLabelCards';
+import { FilterExpensesByCategoryForChart } from '@/components/FilterExpensesByCategoryForChart';
 import { Incomes } from '@/components/Incomes';
 import { Spendings } from '@/components/Spendings';
 import { TotalSpendings } from '@/components/TotalSpendings';
@@ -72,6 +73,9 @@ export default function HomeScreen() {
                                 ({getCurrentMonthYear()})
                             </Text>
                         </Text>
+
+                        {/* Filter expenses by category for the chart */}
+                        <FilterExpensesByCategoryForChart />
                     </View>
 
                     <TotalSpendings />

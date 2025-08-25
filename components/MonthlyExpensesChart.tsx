@@ -3,9 +3,11 @@ import { Fonts } from '@/constants/Fonts';
 import { categoryCollection, expenseCollection } from '@/lib/db';
 import Category from '@/model/Category.model';
 import Expense from '@/model/Expense.model';
+import { excludeCategoryChartFilterAtom } from '@/stores/spendings.store';
 import { getStartOfMonth, getStartOfNextMonth } from '@/utils/date';
 import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
+import { useAtom } from 'jotai';
 import React, { useMemo } from 'react';
 import { PieChart } from 'react-native-gifted-charts';
 
@@ -23,12 +25,18 @@ interface MonthlyExpensesChartProps {
 
 function MonthlyExpensesChartComp({ categories, expenses }: MonthlyExpensesChartProps) {
 
+    const [filter] = useAtom(excludeCategoryChartFilterAtom);
+
+    const filteredExpenses = useMemo(() => {
+        return expenses.filter((exp) => !filter.includes(exp.category.id));
+    }, [expenses, filter]);
+
     const pieData = useMemo(() => {
-        const totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+        const totalAmount = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
 
         const categoryAmounts = categories.map(category => {
-            const amount = expenses
-                .filter(expense => expense.category.id === category.id)
+            const amount = filteredExpenses
+                .filter((expense) => expense.category.id === category.id)
                 .reduce((sum, expense) => sum + expense.amount, 0);
 
             return {
@@ -46,7 +54,7 @@ function MonthlyExpensesChartComp({ categories, expenses }: MonthlyExpensesChart
                 value: percentage, color: category.color, text: `${percentage.toFixed(0)}%`
             }
         });
-    }, [expenses, categories]);
+    }, [filteredExpenses, categories]);
 
     return (
         <PieChart
