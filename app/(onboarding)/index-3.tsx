@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Pressable, Text, TextInput, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Pressable, Text, TextInput, ToastAndroid, View } from 'react-native'
 import Animated, {
     runOnJS,
     useAnimatedStyle,
@@ -12,6 +12,7 @@ import Animated, {
 
 import { Fonts } from '@/constants/Fonts'
 import { incomeCollection } from '@/lib/db'
+import { formatToRupiah, parseFromRupiah } from '@/utils/formatter'
 import { addIncomeSchema, AddIncomeSchema } from '@/zod/income.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDatabase } from '@nozbe/watermelondb/react'
@@ -23,6 +24,7 @@ import { Notifier, NotifierComponents } from 'react-native-notifier'
 export default function OnboardingIncomeScreen() {
 
     const database = useDatabase();
+    const [displayAmount, setDisplayAmount] = useState('');
 
     const screenOpacity = useSharedValue(1)
     const screenTranslateX = useSharedValue(0)
@@ -138,8 +140,17 @@ export default function OnboardingIncomeScreen() {
                             name="amount"
                             render={({ field: { onChange, value } }) => (
                                 <TextInput
-                                    value={(value ?? '').toString()}
-                                    onChangeText={(value) => onChange(Number(value))}
+                                    value={displayAmount}
+                                    onChangeText={(amountInRupiah) => {
+                                        if (!value && amountInRupiah === '0') {
+                                            ToastAndroid.show('Amount cannot be zero', ToastAndroid.SHORT);
+                                            return;
+                                        }
+
+                                        const numericValue = parseFromRupiah(amountInRupiah);
+                                        setDisplayAmount(formatToRupiah(numericValue));
+                                        onChange(numericValue)
+                                    }}
                                     placeholder="What is the amount?"
                                     placeholderTextColor="#9CA3AF"
                                     className="w-full bg-[#2a2a2a] text-white rounded-xl px-4 py-3 mb-5"
