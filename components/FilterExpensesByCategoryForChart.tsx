@@ -3,13 +3,12 @@ import { Fonts } from '@/constants/Fonts';
 import { categoryCollection, expenseCollection } from "@/lib/db";
 import type Category from "@/model/Category.model";
 import Expense from '@/model/Expense.model';
-import { excludeCategoryChartFilterAtom } from '@/stores/spendings.store';
+import { useExcludedCategoriesForExpenseChartFilter, useSetExcludedCategoriesForExpenseChartFilter } from '@/stores/localState.store';
 import { getStartOfMonth, getStartOfNextMonth } from '@/utils/date';
 import { formatMoney } from '@/utils/formatter';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
-import { useAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
 
@@ -27,12 +26,14 @@ interface FilterExpensesByCategoryForChartProps {
 
 function FilterExpensesByCategoryForChartComp({ categories, expenses }: FilterExpensesByCategoryForChartProps) {
 
-    const [filter, setFilter] = useAtom(excludeCategoryChartFilterAtom);
+    const excludedCategoryIds = useExcludedCategoriesForExpenseChartFilter();
+    const setExcludedCategoriesForExpenseChartFilter = useSetExcludedCategoriesForExpenseChartFilter();
+
     const [isOpen, setIsOpen] = useState(false);
 
     const filteredExpenses = useMemo(() => {
-        return expenses.filter((exp) => !filter.includes(exp.category.id));
-    }, [expenses, filter]);
+        return expenses.filter((exp) => !excludedCategoryIds.includes(exp.category.id));
+    }, [expenses, excludedCategoryIds]);
 
     const categoryWithAmounts = useMemo(() => {
         return categories.map(category => {
@@ -50,10 +51,10 @@ function FilterExpensesByCategoryForChartComp({ categories, expenses }: FilterEx
     }, [categories, filteredExpenses]);
 
     function onSelect(categoryId: string) {
-        if (filter.includes(categoryId)) {
-            setFilter(filter.filter((id) => id !== categoryId));
+        if (excludedCategoryIds.includes(categoryId)) {
+            setExcludedCategoriesForExpenseChartFilter(excludedCategoryIds.filter((id) => id !== categoryId));
         } else {
-            setFilter([...filter, categoryId]);
+            setExcludedCategoriesForExpenseChartFilter([...excludedCategoryIds, categoryId]);
         }
     }
 
@@ -91,9 +92,9 @@ function FilterExpensesByCategoryForChartComp({ categories, expenses }: FilterEx
                                         onSelect(category.id);
                                     }}
                                 >
-                                    <Ionicons name={!filter.includes(category.id) ? 'radio-button-on' : 'radio-button-off'} size={20} color={!filter.includes(category.id) ? '#3AB879' : Colors.dark.text} />
+                                    <Ionicons name={!excludedCategoryIds.includes(category.id) ? 'radio-button-on' : 'radio-button-off'} size={20} color={!excludedCategoryIds.includes(category.id) ? '#3AB879' : Colors.dark.text} />
                                     <View className='flex-1 flex-row items-center justify-between'>
-                                        <Text className='text-white text-lg' style={[{ fontFamily: Fonts.ManropeSemiBold }, !filter.includes(category.id) && { color: '#3AB879' }]}>
+                                        <Text className='text-white text-lg' style={[{ fontFamily: Fonts.ManropeSemiBold }, !excludedCategoryIds.includes(category.id) && { color: '#3AB879' }]}>
                                             {category.name}
                                         </Text>
 

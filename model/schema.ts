@@ -26,6 +26,6 @@ export default appSchema({
                 { name: 'amount', type: 'number' },
                 { name: 'created_at', type: 'number' }
             ],
-        }),
+        })
     ],
 })

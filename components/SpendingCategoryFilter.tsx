@@ -2,10 +2,9 @@ import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { categoryCollection } from '@/lib/db';
 import Category from '@/model/Category.model';
-import { selectedCategoryFilterAtom } from '@/stores/spendings.store';
+import { useSelectedCategoryForExpenseListFilter, useSetSelectedCategoryForExpenseListFilter } from '@/stores/localState.store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { withObservables } from '@nozbe/watermelondb/react';
-import { useAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
 
@@ -19,7 +18,9 @@ interface SpendingCategoryFilterProps {
 
 function SpendingCategoryFilterComp({ categories }: SpendingCategoryFilterProps) {
 
-    const [filter, setFilter] = useAtom(selectedCategoryFilterAtom);
+    const filter = useSelectedCategoryForExpenseListFilter();
+    const setFilter = useSetSelectedCategoryForExpenseListFilter();
+
     const [isOpen, setIsOpen] = useState(false);
 
     const filterOptions = useMemo(() => {

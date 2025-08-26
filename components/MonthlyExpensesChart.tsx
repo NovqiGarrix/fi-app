@@ -3,11 +3,10 @@ import { Fonts } from '@/constants/Fonts';
 import { categoryCollection, expenseCollection } from '@/lib/db';
 import Category from '@/model/Category.model';
 import Expense from '@/model/Expense.model';
-import { excludeCategoryChartFilterAtom } from '@/stores/spendings.store';
+import { useExcludedCategoriesForExpenseChartFilter } from '@/stores/localState.store';
 import { getStartOfMonth, getStartOfNextMonth } from '@/utils/date';
 import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
-import { useAtom } from 'jotai';
 import React, { useMemo } from 'react';
 import { PieChart } from 'react-native-gifted-charts';
 
@@ -25,11 +24,11 @@ interface MonthlyExpensesChartProps {
 
 function MonthlyExpensesChartComp({ categories, expenses }: MonthlyExpensesChartProps) {
 
-    const [filter] = useAtom(excludeCategoryChartFilterAtom);
+    const excludedCategoryIds = useExcludedCategoriesForExpenseChartFilter();
 
     const filteredExpenses = useMemo(() => {
-        return expenses.filter((exp) => !filter.includes(exp.category.id));
-    }, [expenses, filter]);
+        return expenses.filter((exp) => !excludedCategoryIds.includes(exp.category.id));
+    }, [expenses, excludedCategoryIds]);
 
     const pieData = useMemo(() => {
         const totalAmount = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);

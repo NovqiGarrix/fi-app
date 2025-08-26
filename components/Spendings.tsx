@@ -2,14 +2,13 @@ import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { database, expenseCollection } from "@/lib/db";
 import Expense from "@/model/Expense.model";
-import { selectedCategoryFilterAtom } from "@/stores/spendings.store";
+import { useSelectedCategoryForExpenseListFilter } from "@/stores/localState.store";
 import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
 import { formatMoney } from "@/utils/formatter";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useAtom } from "jotai";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, Modal, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Notifier, NotifierComponents } from "react-native-notifier";
@@ -39,7 +38,7 @@ interface SpendingsProps {
 
 function SpendingsComp({ expenses }: SpendingsProps) {
 
-    const [filter] = useAtom(selectedCategoryFilterAtom);
+    const filter = useSelectedCategoryForExpenseListFilter();
     const [longPressExpense, setLongPressExpense] = useState<Expense | null>(null);
 
     const filteredExpenses = useMemo(() => {
