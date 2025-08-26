@@ -69,7 +69,7 @@ function FilterExpensesByCategoryForChartComp({ categories, expenses }: FilterEx
 
             <Modal transparent visible={isOpen} animationType="fade" onRequestClose={() => setIsOpen(false)}>
                 <View className="flex-1 bg-black/60 items-center justify-center px-6">
-                    <View className="w-full max-h-80 rounded-2xl bg-[#1c1c1c] py-6">
+                    <View className="w-full h-full max-h-[30rem] rounded-2xl bg-[#1c1c1c] py-6">
                         <View className='flex flex-row items-center justify-between px-6 pb-4 mb-2 border-b border-dark-tabIconDefault/20'>
                             <Text style={{ fontFamily: Fonts.ManropeBold }} className="text-white text-xl">
                                 Filter Expenses by Category
