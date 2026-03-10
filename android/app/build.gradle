@@ -97,8 +97,8 @@ def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
         applicationId 'com.novqigarrix.fiapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 4
+        versionName "1.1.2"
     }
     signingConfigs {
         debug {
