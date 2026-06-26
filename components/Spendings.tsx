@@ -8,7 +8,7 @@ import { formatMoney } from "@/utils/formatter";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -51,6 +51,7 @@ interface SpendingsProps {
 
 function SpendingsComp({ expenses }: SpendingsProps) {
   const filter = useSelectedCategoryForExpenseListFilter();
+  const queryClient = useQueryClient();
   const [longPressExpense, setLongPressExpense] = useState<Expense | null>(
     null,
   );
@@ -93,6 +94,7 @@ function SpendingsComp({ expenses }: SpendingsProps) {
         });
       },
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["daily-spendings"] });
         setLongPressExpense(null);
         setTimeout(() => {
           Notifier.showNotification({

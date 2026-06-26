@@ -6,7 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { Picker as RNPickerSelect } from '@react-native-picker/picker';
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, Modal, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
@@ -24,6 +24,7 @@ type AddExpenseSchema = z.infer<typeof addExpenseSchema>;
 export function AddExpense() {
 
     const database = useDatabase();
+    const queryClient = useQueryClient();
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [displayAmount, setDisplayAmount] = useState('');
 
@@ -68,6 +69,7 @@ export function AddExpense() {
 
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['daily-spendings'] });
             form.reset();
             setDisplayAmount('');
             setShowCreateModal(false);
